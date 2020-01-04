@@ -1,17 +1,19 @@
-const ChainedMap = require('./ChainedMap');
-const ChainedSet = require('./ChainedSet');
-const Resolve = require('./Resolve');
-const ResolveLoader = require('./ResolveLoader');
-const Output = require('./Output');
-const DevServer = require('./DevServer');
-const Plugin = require('./Plugin');
-const Module = require('./Module');
-const Optimization = require('./Optimization');
-const Performance = require('./Performance');
+const ChainedMap = require("./ChainedMap");
+const ChainedSet = require("./ChainedSet");
+const Resolve = require("./Resolve");
+const ResolveLoader = require("./ResolveLoader");
+const Output = require("./Output");
+const DevServer = require("./DevServer");
+const Plugin = require("./Plugin");
+const Module = require("./Module");
+const Optimization = require("./Optimization");
+const Performance = require("./Performance");
 
 module.exports = class extends ChainedMap {
   constructor() {
     super();
+
+    // 生成对应实例
     this.devServer = new DevServer(this);
     this.entryPoints = new ChainedMap(this);
     this.module = new Module(this);
@@ -22,35 +24,42 @@ module.exports = class extends ChainedMap {
     this.plugins = new ChainedMap(this);
     this.resolve = new Resolve(this);
     this.resolveLoader = new ResolveLoader(this);
+
+    // 调用ChainedMap类的extend方法 生成速记方法
     this.extend([
-      'amd',
-      'bail',
-      'cache',
-      'context',
-      'devtool',
-      'externals',
-      'loader',
-      'mode',
-      'name',
-      'parallelism',
-      'profile',
-      'recordsInputPath',
-      'recordsPath',
-      'recordsOutputPath',
-      'stats',
-      'target',
-      'watch',
-      'watchOptions',
+      "amd",
+      "bail",
+      "cache",
+      "context",
+      "devtool",
+      "externals",
+      "loader",
+      "mode",
+      "name",
+      "parallelism",
+      "profile",
+      "recordsInputPath",
+      "recordsPath",
+      "recordsOutputPath",
+      "stats",
+      "target",
+      "watch",
+      "watchOptions"
     ]);
   }
 
-  static toString(config, { verbose = false, configPrefix = 'config' } = {}) {
+  static toString(config, { verbose = false, configPrefix = "config" } = {}) {
     // eslint-disable-next-line global-require
-    const { stringify } = require('javascript-stringify');
+    const { stringify } = require("javascript-stringify");
 
+    // https://www.npmjs.com/package/javascript-stringify
+    // 使用javascript-stringify提供的stringify方法，自定义序列化规则(添加一些注释)
     return stringify(
       config,
+      // 自定义序列化方法
       (value, indent, stringify) => {
+        // 生成plugin注释语句
+
         // improve plugin output
         if (value && value.__pluginName) {
           const prefix = `/* ${configPrefix}.${value.__pluginType}('${value.__pluginName}') */\n`;
@@ -71,19 +80,20 @@ module.exports = class extends ChainedMap {
             stringify(
               value.__pluginArgs && value.__pluginArgs.length
                 ? { args: value.__pluginArgs }
-                : {},
+                : {}
             )
           );
         }
 
+        // 生成rule注释语句
         // improve rule/use output
         if (value && value.__ruleNames) {
           const ruleTypes = value.__ruleTypes;
           const prefix = `/* ${configPrefix}.module${value.__ruleNames
             .map(
-              (r, index) => `.${ruleTypes ? ruleTypes[index] : 'rule'}('${r}')`,
+              (r, index) => `.${ruleTypes ? ruleTypes[index] : "rule"}('${r}')`
             )
-            .join('')}${
+            .join("")}${
             value.__useName ? `.use('${value.__useName}')` : ``
           } */\n`;
           return prefix + stringify(value);
@@ -94,7 +104,8 @@ module.exports = class extends ChainedMap {
         }
 
         // shorten long functions
-        if (typeof value === 'function') {
+        // 缩短长函数的描述
+        if (typeof value === "function") {
           if (!verbose && value.toString().length > 100) {
             return `function () { /* omitted long function */ }`;
           }
@@ -102,15 +113,17 @@ module.exports = class extends ChainedMap {
 
         return stringify(value);
       },
-      2,
+      2
     );
   }
 
   entry(name) {
+    // 获取entryPoints这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个ChainedSet实例赋值
     return this.entryPoints.getOrCompute(name, () => new ChainedSet(this));
   }
 
   plugin(name) {
+    // 获取plugins这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个Plugin实例赋值
     return this.plugins.getOrCompute(name, () => new Plugin(this, name));
   }
 
@@ -131,37 +144,38 @@ module.exports = class extends ChainedMap {
         entry: Object.keys(entryPoints).reduce(
           (acc, key) =>
             Object.assign(acc, { [key]: entryPoints[key].values() }),
-          {},
-        ),
-      }),
+          {}
+        )
+      })
     );
   }
 
+  // 调用Config.toString静态方法
   toString(options) {
     return module.exports.toString(this.toConfig(), options);
   }
 
   merge(obj = {}, omit = []) {
     const omissions = [
-      'node',
-      'output',
-      'resolve',
-      'resolveLoader',
-      'devServer',
-      'optimization',
-      'performance',
-      'module',
+      "node",
+      "output",
+      "resolve",
+      "resolveLoader",
+      "devServer",
+      "optimization",
+      "performance",
+      "module"
     ];
 
-    if (!omit.includes('entry') && 'entry' in obj) {
+    if (!omit.includes("entry") && "entry" in obj) {
       Object.keys(obj.entry).forEach(name =>
-        this.entry(name).merge([].concat(obj.entry[name])),
+        this.entry(name).merge([].concat(obj.entry[name]))
       );
     }
 
-    if (!omit.includes('plugin') && 'plugin' in obj) {
+    if (!omit.includes("plugin") && "plugin" in obj) {
       Object.keys(obj.plugin).forEach(name =>
-        this.plugin(name).merge(obj.plugin[name]),
+        this.plugin(name).merge(obj.plugin[name])
       );
     }
 
@@ -171,6 +185,6 @@ module.exports = class extends ChainedMap {
       }
     });
 
-    return super.merge(obj, [...omit, ...omissions, 'entry', 'plugin']);
+    return super.merge(obj, [...omit, ...omissions, "entry", "plugin"]);
   }
 };
