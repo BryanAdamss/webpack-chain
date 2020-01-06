@@ -127,9 +127,11 @@ module.exports = class extends ChainedMap {
     return this.plugins.getOrCompute(name, () => new Plugin(this, name));
   }
 
+  // 生成config对象
   toConfig() {
     const entryPoints = this.entryPoints.entries() || {};
 
+    // clean会剔除入参对象中的空值、空数组、空对象，并返回一个新对象
     return this.clean(
       Object.assign(this.entries() || {}, {
         node: this.node.entries(),
@@ -155,6 +157,7 @@ module.exports = class extends ChainedMap {
     return module.exports.toString(this.toConfig(), options);
   }
 
+  // 将一个plain object 合并到config实例中
   merge(obj = {}, omit = []) {
     const omissions = [
       "node",

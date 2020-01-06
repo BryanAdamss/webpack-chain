@@ -1,10 +1,11 @@
-const ChainedMap = require('./ChainedMap');
-const ChainedSet = require('./ChainedSet');
-const Plugin = require('./Plugin');
+const ChainedMap = require("./ChainedMap");
+const ChainedSet = require("./ChainedSet");
+const Plugin = require("./Plugin");
 
 module.exports = class extends ChainedMap {
   constructor(parent) {
     super(parent);
+
     this.alias = new ChainedMap(this);
     this.aliasFields = new ChainedSet(this);
     this.descriptionFiles = new ChainedSet(this);
@@ -13,24 +14,28 @@ module.exports = class extends ChainedMap {
     this.mainFiles = new ChainedSet(this);
     this.modules = new ChainedSet(this);
     this.plugins = new ChainedMap(this);
+
+    // 生成快捷方法
     this.extend([
-      'cachePredicate',
-      'cacheWithContext',
-      'concord',
-      'enforceExtension',
-      'enforceModuleExtension',
-      'symlinks',
-      'unsafeCache',
+      "cachePredicate",
+      "cacheWithContext",
+      "concord",
+      "enforceExtension",
+      "enforceModuleExtension",
+      "symlinks",
+      "unsafeCache"
     ]);
   }
 
+  // 生成resolve.plugins中的一个plugin
   plugin(name) {
     return this.plugins.getOrCompute(
       name,
-      () => new Plugin(this, name, 'resolve.plugin'),
+      () => new Plugin(this, name, "resolve.plugin")
     );
   }
 
+  // 生成config
   toConfig() {
     return this.clean(
       Object.assign(this.entries() || {}, {
@@ -41,25 +46,26 @@ module.exports = class extends ChainedMap {
         mainFields: this.mainFields.values(),
         mainFiles: this.mainFiles.values(),
         modules: this.modules.values(),
-        plugins: this.plugins.values().map(plugin => plugin.toConfig()),
-      }),
+        plugins: this.plugins.values().map(plugin => plugin.toConfig())
+      })
     );
   }
 
+  // 合并
   merge(obj, omit = []) {
     const omissions = [
-      'alias',
-      'aliasFields',
-      'descriptionFiles',
-      'extensions',
-      'mainFields',
-      'mainFiles',
-      'modules',
+      "alias",
+      "aliasFields",
+      "descriptionFiles",
+      "extensions",
+      "mainFields",
+      "mainFiles",
+      "modules"
     ];
 
-    if (!omit.includes('plugin') && 'plugin' in obj) {
+    if (!omit.includes("plugin") && "plugin" in obj) {
       Object.keys(obj.plugin).forEach(name =>
-        this.plugin(name).merge(obj.plugin[name]),
+        this.plugin(name).merge(obj.plugin[name])
       );
     }
 
@@ -69,6 +75,6 @@ module.exports = class extends ChainedMap {
       }
     });
 
-    return super.merge(obj, [...omit, ...omissions, 'plugin']);
+    return super.merge(obj, [...omit, ...omissions, "plugin"]);
   }
 };

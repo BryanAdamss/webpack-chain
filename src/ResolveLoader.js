@@ -1,5 +1,5 @@
-const Resolve = require('./Resolve');
-const ChainedSet = require('./ChainedSet');
+const Resolve = require("./Resolve");
+const ChainedSet = require("./ChainedSet");
 
 module.exports = class extends Resolve {
   constructor(parent) {
@@ -8,16 +8,17 @@ module.exports = class extends Resolve {
     this.packageMains = new ChainedSet(this);
   }
 
+  // 生成config
   toConfig() {
     return this.clean({
       moduleExtensions: this.moduleExtensions.values(),
       packageMains: this.packageMains.values(),
-      ...super.toConfig(),
+      ...super.toConfig()
     });
   }
 
   merge(obj, omit = []) {
-    const omissions = ['moduleExtensions', 'packageMains'];
+    const omissions = ["moduleExtensions", "packageMains"];
 
     omissions.forEach(key => {
       if (!omit.includes(key) && key in obj) {

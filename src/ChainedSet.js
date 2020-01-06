@@ -1,4 +1,4 @@
-const Chainable = require('./Chainable');
+const Chainable = require("./Chainable");
 
 module.exports = class extends Chainable {
   constructor(parent) {
@@ -6,43 +6,51 @@ module.exports = class extends Chainable {
     this.store = new Set();
   }
 
+  // set的尾部添加一个value（类似Array.prototype.push）
   add(value) {
     this.store.add(value);
     return this;
   }
 
+  // set的开始位置添加一个value（类似Array.prototype.unshift)
   prepend(value) {
     this.store = new Set([value, ...this.store]);
     return this;
   }
 
+  // 清除set
   clear() {
     this.store.clear();
     return this;
   }
 
+  // 删除某个值
   delete(value) {
     this.store.delete(value);
     return this;
   }
 
+  // 返回set中值的数组
   values() {
     return [...this.store];
   }
 
+  // 是否有某值
   has(value) {
     return this.store.has(value);
   }
 
+  // 连接给定的数组到 set 尾部
   merge(arr) {
     this.store = new Set([...this.store, ...arr]);
     return this;
   }
 
+  // 条件判断
   when(
     condition,
     whenTruthy = Function.prototype,
-    whenFalsy = Function.prototype,
+    whenFalsy = Function.prototype
   ) {
     if (condition) {
       whenTruthy(this);

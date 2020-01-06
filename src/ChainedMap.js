@@ -109,7 +109,7 @@ module.exports = class extends Chainable {
     return this;
   }
 
-  // 合并,omit中的key会被忽略
+  // 将obj合并到Map中,omit中的key会被忽略
   merge(obj, omit = []) {
     Object.keys(obj).forEach(key => {
       if (omit.includes(key)) {
@@ -123,8 +123,13 @@ module.exports = class extends Chainable {
         value === null ||
         !this.has(key)
       ) {
+        // value不为数组、对象
+        // value为null
+        // key不存在时
+        // 设置对应值
         this.set(key, value);
       } else {
+        // 否则，递归合并
         this.set(key, merge(this.get(key), value));
       }
     });
@@ -132,7 +137,7 @@ module.exports = class extends Chainable {
     return this;
   }
 
-  // 清洗obj中的空值、空数组、空对象并返回一个新对象
+  // 剔除obj中的空值、空数组、空对象，并返回一个新对象
   clean(obj) {
     return Object.keys(obj).reduce((acc, key) => {
       const value = obj[key];
