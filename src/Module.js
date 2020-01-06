@@ -20,7 +20,7 @@ module.exports = class extends ChainedMap {
     );
   }
 
-  // 生成一个新rule
+  // 生成一个新具名rule
   rule(name) {
     return this.rules.getOrCompute(name, () => new Rule(this, name, "rule"));
   }

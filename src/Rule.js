@@ -38,12 +38,12 @@ const Rule = Orderable(
       ]);
     }
 
-    // 设置use字段
+    // 生成具名use
     use(name) {
       return this.uses.getOrCompute(name, () => new Use(this, name));
     }
 
-    // 设置rule
+    // 设置具名rule
     rule(name) {
       return this.rules.getOrCompute(name, () => new Rule(this, name, "rule"));
     }
