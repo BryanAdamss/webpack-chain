@@ -1,5 +1,6 @@
 // 一个函数，接收一个父类
 // 返回一个继承了父类的子类
+// 主要实现顺序调用
 module.exports = Class =>
   class extends Class {
     // 规定当前实例应该在name之前执行
