@@ -54,6 +54,7 @@ module.exports = class extends ChainedMap {
     ]);
   }
 
+  // 生成DevServer的config对象
   toConfig() {
     return this.clean({
       allowedHosts: this.allowedHosts.values(),
@@ -61,6 +62,7 @@ module.exports = class extends ChainedMap {
     });
   }
 
+  // 合并选项
   merge(obj, omit = []) {
     if (!omit.includes("allowedHosts") && "allowedHosts" in obj) {
       this.allowedHosts.merge(obj.allowedHosts);

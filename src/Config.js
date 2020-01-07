@@ -118,12 +118,12 @@ module.exports = class extends ChainedMap {
   }
 
   entry(name) {
-    // 获取entryPoints这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个ChainedSet实例赋值
+    // 获取entryPoints这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个ChainedSet实例赋值，并返回赋值用的ChainedSet实例
     return this.entryPoints.getOrCompute(name, () => new ChainedSet(this));
   }
 
   plugin(name) {
-    // 获取plugins这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个Plugin实例赋值
+    // 获取plugins这个chainedMap上name对应的value，若无此name，则先set一个name，再用一个Plugin实例赋值，并返回赋值用的Plugin实例
     return this.plugins.getOrCompute(name, () => new Plugin(this, name));
   }
 
@@ -188,6 +188,6 @@ module.exports = class extends ChainedMap {
       }
     });
 
-    return super.merge(obj, [...omit, ...omissions, "entry", "plugin"]);
+    return super.merge(Obj, [...omit, ...omissions, "entry", "plugin"]);
   }
 };
