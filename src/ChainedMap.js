@@ -9,7 +9,7 @@ module.exports = class extends Chainable {
     this.store = new Map();
   }
 
-  // 设置快捷方法
+  // 生成快捷方法
   extend(methods) {
     this.shorthands = methods;
     methods.forEach(method => {
