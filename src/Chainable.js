@@ -1,5 +1,5 @@
-// 主要被ChainedSet、ChainedMap子类继承
-// 实现了batch、end方法
+// ChainedSet、ChainedMap的父类
+// 主要实现了链式调用
 module.exports = class {
   constructor(parent) {
     this.parent = parent;

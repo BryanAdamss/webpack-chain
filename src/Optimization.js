@@ -4,6 +4,8 @@ const Plugin = require("./Plugin");
 module.exports = class extends ChainedMap {
   constructor(parent) {
     super(parent);
+
+    // 保存minimizer实例
     this.minimizers = new ChainedMap(this);
 
     // 生成快捷方法

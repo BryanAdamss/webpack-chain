@@ -3,6 +3,8 @@ const Chainable = require("./Chainable");
 module.exports = class extends Chainable {
   constructor(parent) {
     super(parent);
+
+    // 实际保存ChainedSet值的地方
     this.store = new Set();
   }
 

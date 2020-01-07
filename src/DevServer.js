@@ -5,6 +5,7 @@ module.exports = class extends ChainedMap {
   constructor(parent) {
     super(parent);
 
+    // 允许的host
     this.allowedHosts = new ChainedSet(this);
 
     // 生成快捷方法
