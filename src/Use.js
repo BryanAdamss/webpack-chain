@@ -31,6 +31,7 @@ module.exports = Orderable(
       return super.merge(obj, [...omit, "loader", "options"]);
     }
 
+    // 生成use的config对象
     toConfig() {
       const config = this.clean(this.entries() || {});
 

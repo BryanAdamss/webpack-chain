@@ -7,6 +7,7 @@ const Rule = Orderable(
   class extends ChainedMap {
     constructor(parent, name, ruleType = "rule") {
       super(parent);
+
       this.name = name;
       this.names = [];
       this.ruleType = ruleType;
@@ -48,7 +49,7 @@ const Rule = Orderable(
       return this.rules.getOrCompute(name, () => new Rule(this, name, "rule"));
     }
 
-    // 设置oneof
+    // 设置具名oneof
     oneOf(name) {
       return this.oneOfs.getOrCompute(
         name,
